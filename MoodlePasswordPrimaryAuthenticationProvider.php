@@ -146,6 +146,10 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 		if ( !empty( $decoded->token ) ) {
 			return $decoded->token;
 
+		} else if ( isset( $decoded->exception ) ) {
+			$this->logger->error( 'AuthMoodle: Remote exception: '.$decoded->exception );
+			return false;
+
 		} else if ( isset( $decoded->error ) ) {
 			$this->logger->error( 'AuthMoodle: Remote error: '.$decoded->error );
 			return false;
@@ -253,6 +257,11 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 
 		if ( empty( $decoded ) ) {
 			$this->logger->error( 'AuthMoodle: Unable to get Moodle user profile' );
+			return false;
+		}
+
+		if ( isset( $decoded->exception ) ) {
+			$this->logger->error( 'AuthMoodle: Remote exception: '.$decoded->exception );
 			return false;
 		}
 
