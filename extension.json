@@ -5,7 +5,7 @@
 		"David Mudrák"
 	],
 	"url": "https://github.com/moodlehq/mediawiki-authmoodle",
-	"description": "Extension for MediaWiki allowing to authenticate users against Moodle database via mobile app services"
+	"description": "Extension for MediaWiki allowing to authenticate users against Moodle database via mobile app services",
 	"license-name": "GPL-3.0+",
 	"type": "auth",
 	"AutoloadClasses": {
