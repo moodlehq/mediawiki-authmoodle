@@ -1,0 +1,15 @@
+{
+	"name": "AuthMoodle",
+	"version": "1.0.0-beta",
+	"author": [
+		"David Mudrák"
+	],
+	"url": "https://github.com/moodlehq/mediawiki-authmoodle",
+	"description": "Extension for MediaWiki allowing to authenticate users against Moodle database via mobile app services"
+	"license-name": "GPL-3.0+",
+	"type": "auth",
+	"AutoloadClasses": {
+		"MediaWiki\\Auth\\MoodlePasswordPrimaryAuthenticationProvider": "MoodlePasswordPrimaryAuthenticationProvider.php"
+	},
+	"manifest_version": 1
+}
