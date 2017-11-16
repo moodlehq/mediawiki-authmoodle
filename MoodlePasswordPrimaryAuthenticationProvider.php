@@ -195,8 +195,7 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 		}
 
 		$user->setEmail( $userinfo->email );
-
-		// TODO This should not be needed once https://bugzilla.wikimedia.org/show_bug.cgi?id=13963 is fixed.
+		$user->confirmEmail();
 		$user->saveSettings();
 	}
 
