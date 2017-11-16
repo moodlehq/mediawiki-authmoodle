@@ -165,8 +165,8 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
      * @param AuthenticationResponse $response
      */
     public function postAuthentication( $user, AuthenticationResponse $response ) {
-        if ( $response->status !== AuthenticationResponse::PASS ) {
-            return;
+		if ( $response->status !== AuthenticationResponse::PASS ) {
+			return;
 		}
 
 		if ( empty( $this->tokens[$user->getName()] ) ) {
