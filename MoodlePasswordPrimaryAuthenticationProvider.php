@@ -37,6 +37,9 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 	/** @var array */
 	protected $tokens = [];
 
+	/** @var array */
+	protected $userdata = [];
+
     /**
      * @param array $params Settings
      *  - moodleUrl: The URL of the Moodle site we authenticate against.
@@ -71,6 +74,14 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 			return AuthenticationResponse::newAbstain();
 
 		} else {
+			$userinfo = $this->getMoodleUserInfo( $req->username, $token );
+
+			if ( empty( $userinfo )) {
+				$this->logger->error( 'AuthMoodle: Unable to obtain valid user info' );
+				return AuthenticationResponse::newAbstain();
+			}
+
+			$this->userinfo[$username] = $userinfo;
 			$this->tokens[$username] = $token;
 			return AuthenticationResponse::newPass( $username );
 		}
@@ -174,7 +185,7 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 			return;
 		}
 
-		$userinfo = $this->getMoodleUserInfo( $user->getName(), $this->tokens[$user->getName()] );
+		$userinfo = $this->userinfo[$user->getName()] ?? null;
 
 		if ( empty( $userinfo ) ) {
 			$this->logger->error( 'AuthMoodle: Empty user info, skipping update ');
@@ -200,7 +211,7 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 	}
 
 	/**
-	 * Loads the Moodle user's real name and email.
+	 * Loads the Moodle user's real name, email and username.
 	 *
 	 * @param string $username
 	 * @param string $token
@@ -267,6 +278,7 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 		return (object) [
 			'fullname' => $decoded[0]->fullname,
 			'email' => $decoded[0]->email,
+			'username' => $decoded[0]->username,
 		];
 	}
 
