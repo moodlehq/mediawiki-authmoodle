@@ -21,6 +21,7 @@
 
 namespace MediaWiki\Auth;
 
+use MediaWiki\MediaWikiServices;
 use User;
 
 /**
@@ -33,6 +34,9 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 
 	/** @var string The URL of the Moodle site we authenticate against. */
 	protected $moodleUrl;
+
+	/** @var array Array of (string) username => (string) email of users to become bureaucrats automatically on login. */
+	protected $autoBureaucrats = [];
 
 	/** @var array */
 	protected $tokens = [];
@@ -51,6 +55,7 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 		}
 
 		$this->moodleUrl = $params['moodleUrl'];
+		$this->autoBureaucrats = $params['autoBureaucrats'] ?? [];
     }
 
 	public function beginPrimaryAuthentication( array $reqs ) {
@@ -208,6 +213,20 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 		$user->setEmail( $userinfo->email );
 		$user->confirmEmail();
 		$user->saveSettings();
+
+		// Autopromote to be a bureaucrat.
+		if ( empty( $this->autoBureaucrats[ $user->getName() ] ) ) {
+			MediaWikiServices::getInstance()
+				->getUserGroupManager()
+				->removeUserFromGroup( $user, 'bureaucrat' );
+
+		} else {
+			if ( $this->autoBureaucrats[ $user->getName() ] === $user->getEmail() ) {
+				MediaWikiServices::getInstance()
+					->getUserGroupManager()
+					->addUserToGroup( $user, 'bureaucrat' );
+			}
+		}
 	}
 
 	/**
