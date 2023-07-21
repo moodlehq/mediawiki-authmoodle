@@ -214,14 +214,13 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 		$user->confirmEmail();
 		$user->saveSettings();
 
-		// Autopromote to be a bureaucrat.
-		if ( empty( $this->autoBureaucrats[ $user->getName() ] ) ) {
-			MediaWikiServices::getInstance()
-				->getUserGroupManager()
-				->removeUserFromGroup( $user, 'bureaucrat' );
+		if ( ! empty( $this->autoBureaucrats[ $user->getName() ] ) ) {
+			if ( $this->autoBureaucrats[ $user->getName() ] === 'unset' ) {
+				MediaWikiServices::getInstance()
+					->getUserGroupManager()
+					->removeUserFromGroup( $user, 'bureaucrat' );
 
-		} else {
-			if ( $this->autoBureaucrats[ $user->getName() ] === $user->getEmail() ) {
+			} else if ( $this->autoBureaucrats[ $user->getName() ] === $user->getEmail() ) {
 				MediaWikiServices::getInstance()
 					->getUserGroupManager()
 					->addUserToGroup( $user, 'bureaucrat' );
