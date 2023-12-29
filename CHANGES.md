@@ -1,3 +1,7 @@
+## 1.0.4 ##
+
+* AutoBueaucrat behaviour improved MDLSITE-7317.
+
 ## 1.0.3 ##
 
 * Implemented MDLSITE-7317.
