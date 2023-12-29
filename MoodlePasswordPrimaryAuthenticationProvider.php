@@ -22,6 +22,7 @@
 namespace MediaWiki\Auth;
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserNameUtils;
 use User;
 
 /**
@@ -68,7 +69,8 @@ class MoodlePasswordPrimaryAuthenticationProvider extends AbstractPrimaryAuthent
 			return AuthenticationResponse::newAbstain();
 		}
 
-		$username = User::getCanonicalName( $req->username, 'usable' );
+		$userNameUtils = MediaWikiServices::getInstance()->getUserNameUtils();
+		$username = $userNameUtils->getCanonical( $req->username, UserNameUtils::RIGOR_USABLE );
 		if ( $username === false ) {
 			return AuthenticationResponse::newAbstain();
 		}
